@@ -292,30 +292,6 @@ always@(posedge SPI_SCK or posedge CONF_DATA0) begin
 	end
 end
 
-// lets create a signal for the write protect sensor of the 1541 - LCA
-reg WR_count = 0;
-reg [31:0] WR_counter = 'hFFFFFFFF;
-
-
-always @(posedge clk_sys)
-begin
-	if (mount_strobe || WR_count)
-		begin
-		WR_count <= 1;
-		WR_counter <= WR_counter + 1'b1;
-		end
-	else
-		begin
-		WR_counter <= 'hFFFFFFFF;
-		end
-	if (WR_counter < 'hFFFFFFFF )
-		img_readonly <= 1;
-	else
-		img_readonly <= 0;
-	if (WR_counter == 'hFFFFFFFF) 
-		WR_count <= 0;
-		
-end
 
 ///////////////////////////////   PS2   ///////////////////////////////
 // 8 byte fifos to store ps2 bytes

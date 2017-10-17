@@ -126,7 +126,7 @@ end component;
 ---------
 
 -- config string used by the io controller to fill the OSD
---constant CONF_STR : string := "C64;PRG;S1,D64;O2,Video standard,PAL,NTSC;O8A,Scandoubler Fx,None,HQ2x-320,HQ2x-160,CRT 25%,CRT 50%;O3,Joysticks,normal,swapped;O6,Audio filter,On,Off;T5,Reset;V0,v0.27.30";
+--constant CONF_STR : string := "C64;PRG;S1,D64;O2,Video standard,PAL,NTSC;O8A,Scandoubler Fx,None,HQ2x-320,HQ2x-160,CRT 25%,CRT 50%;O3,Joysticks,normal,swapped;O6,Audio filter,On,Off;T5,Reset;V0,v0.27.33";
 constant CONF_STR : string := "C64;;F,PRGT64TAPCRT;S,D64;O2,Video standard,PAL,NTSC;O8A,Scandoubler Fx,None,HQ2x-320,HQ2x-160,CRT 25%,CRT 50%;O3,Joysticks,normal,swapped;O6,Audio filter,On,Off;T5,Reset;V0,v0.27.30";
 
 -- convert string to std_logic_vector to be given to user_io
@@ -175,6 +175,8 @@ component mist_io generic(STRLEN : integer := 0 ); port
 	sd_conf           : in  std_logic;
 	sd_sdhc           : in  std_logic;
 	img_mounted       : out std_logic;
+	--img_size          : out std_logic_vector(63 downto 0);
+	img_readonly      : out std_logic;
 	sd_buff_addr      : out std_logic_vector(8 downto 0);
 	sd_buff_dout      : out std_logic_vector(7 downto 0);
 	sd_buff_din       : in  std_logic_vector(7 downto 0);
@@ -413,6 +415,7 @@ end component cartridge;
 	signal sd_buff_din    : std_logic_vector(7 downto 0);
 	signal sd_buff_wr     : std_logic;
 	signal sd_change      : std_logic;
+	signal disk_readonly  : std_logic;
 	
 	-- these need to be redirected to the SDRAM
 	signal sdram_we : std_logic;
@@ -519,6 +522,7 @@ begin
 		sd_buff_din => sd_buff_din,
 		sd_buff_wr => sd_buff_wr,
 		img_mounted => sd_change,
+		img_readonly => disk_readonly,
 
 		ps2_kbd_clk => ps2_clk,
 		ps2_kbd_data => ps2_dat,
@@ -824,6 +828,7 @@ begin
 		c1541rom_wr => c1541rom_wr,
 
 		disk_change => sd_change, 
+		disk_readonly => disk_readonly,
 
 		iec_atn_i  => c1541_iec_atn_i,
 		iec_data_i => c1541_iec_data_i,
